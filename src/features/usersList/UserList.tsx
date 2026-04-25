@@ -6,9 +6,7 @@ import { selectedUser } from "../userDetails/userDetailsSlice";
 import { deleteUser, fetchUsers } from "./userListSlice";
 
 export const UserList = (): JSX.Element => {
-  const users = useAppSelector((state: RootState) => state.userList.users);
-  const error = useAppSelector((state: RootState) => state.userList.error);
-  const loading = useAppSelector((state: RootState) => state.userList.loading);
+  const { users, loading, error } = useAppSelector((state: RootState) => state.userList);
   const dispatch = useAppDispatch();
 
   const handleLoadUsers = (): void => {
