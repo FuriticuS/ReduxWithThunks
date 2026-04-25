@@ -1,10 +1,10 @@
 import type { JSX } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import { selectSelectedUserView } from "./selectedUserSelectors";
+import { useAppDispatch } from "../../hooks";
 import { clearSelectedUser } from "./userDetailsSlice";
+import { useSelectedUserView } from "./useSelectedUserView";
 
 export const SelectedUserDetails = (): JSX.Element => {
-  const selection = useAppSelector(selectSelectedUserView);
+  const selection = useSelectedUserView();
   const dispatch = useAppDispatch();
 
   const handleClearSelection = (): void => {

@@ -1,16 +1,27 @@
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
-import { useAppDispatch, useAppSelector } from "../../hooks";
-import type { RootState } from "../../store";
+import { useAppDispatch } from "../../hooks";
 import type { User } from "../../types/user";
 import { selectedUser } from "../userDetails/userDetailsSlice";
-import { deleteUser, fetchUsers } from "./userListSlice";
+import { fetchUsers, usersQueryKey } from "./usersQuery";
 
 export const UserList = (): JSX.Element => {
-  const { users, loading, error } = useAppSelector((state: RootState) => state.userList);
+  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
+  const {
+    data: users = [],
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: usersQueryKey,
+    queryFn: fetchUsers,
+    enabled: false,
+  });
 
   const handleLoadUsers = (): void => {
-    void dispatch(fetchUsers());
+    void refetch();
   };
 
   const handleSelectUser = (id: number): void => {
@@ -18,8 +29,13 @@ export const UserList = (): JSX.Element => {
   };
 
   const handleDeleteUser = (id: number): void => {
-    dispatch(deleteUser(id));
+    queryClient.setQueryData<User[]>(usersQueryKey, (previous) =>
+      (previous ?? []).filter((user: User) => user.id !== id)
+    );
   };
+
+  const errorMessage: string | undefined =
+    isError && error instanceof Error ? error.message : undefined;
 
   return (
     <div className="user-list">
@@ -32,9 +48,9 @@ export const UserList = (): JSX.Element => {
       >
         Load Users
       </button>
-      {loading && <p>Loading...</p>}
-      {error && <p>{error.message}</p>}
-      {!error && (
+      {isFetching && <p>Loading...</p>}
+      {errorMessage !== undefined && <p>{errorMessage}</p>}
+      {!isError && (
         <ul>
           {users.map((user: User) => (
             <li key={user.id}>

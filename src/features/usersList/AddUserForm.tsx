@@ -1,8 +1,8 @@
+import { useQueryClient } from "@tanstack/react-query";
 import type { JSX } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useAppDispatch } from "../../hooks";
 import type { User } from "../../types/user";
-import { addUser } from "./userListSlice";
+import { usersQueryKey } from "./usersQuery";
 
 type AddUserFormFields = {
   name: string;
@@ -10,7 +10,7 @@ type AddUserFormFields = {
 };
 
 export const AddUserForm = (): JSX.Element => {
-  const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const { register, handleSubmit, reset } = useForm<AddUserFormFields>({
     defaultValues: {
       name: "",
@@ -24,7 +24,10 @@ export const AddUserForm = (): JSX.Element => {
       name: data.name,
       email: data.email,
     };
-    dispatch(addUser(newUser));
+    queryClient.setQueryData<User[]>(usersQueryKey, (previous) => [
+      ...(previous ?? []),
+      newUser,
+    ]);
     reset();
   };
 
