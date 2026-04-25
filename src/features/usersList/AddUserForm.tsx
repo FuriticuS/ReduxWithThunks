@@ -1,44 +1,51 @@
-import type { FormEvent, ReactElement } from "react";
+import type { ChangeEvent, FormEvent, JSX } from "react";
 import { useState } from "react";
 import { useAppDispatch } from "../../hooks";
+import type { User } from "../../types/user";
 import { addUser } from "./userListSlice";
 
-function AddUserForm(): ReactElement {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-
+const AddUserForm = (): JSX.Element => {
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
   const dispatch = useAppDispatch();
 
-  function handleClickAdd(e: FormEvent<HTMLFormElement>): void {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-    dispatch(
-      addUser({
-        id: Math.floor(Math.random() * 100) + 1,
-        name,
-        email,
-      })
-    );
+    const newUser: User = {
+      id: Math.floor(Math.random() * 100) + 1,
+      name,
+      email,
+    };
+    dispatch(addUser(newUser));
     setName("");
     setEmail("");
-  }
+  };
+
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setName(e.target.value);
+  };
+
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setEmail(e.target.value);
+  };
 
   return (
-    <form className="add-user-form" onSubmit={handleClickAdd}>
+    <form className="add-user-form" onSubmit={handleSubmit}>
       <input
         type="text"
         placeholder="Name"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={handleNameChange}
       />
       <input
         type="email"
         placeholder="Email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={handleEmailChange}
       />
       <button type="submit">Add User</button>
     </form>
   );
-}
+};
 
 export default AddUserForm;

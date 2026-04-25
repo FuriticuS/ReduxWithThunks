@@ -1,6 +1,7 @@
 import {
   createAsyncThunk,
   createSlice,
+  type ActionReducerMapBuilder,
   type PayloadAction,
 } from "@reduxjs/toolkit";
 import type { FetchErrorPayload, User } from "../../types/user";
@@ -23,7 +24,7 @@ export const fetchUsers = createAsyncThunk<
   { rejectValue: FetchErrorPayload }
 >("userList/fetchUsers", async (_, { rejectWithValue }) => {
   try {
-    const response = await fetch(
+    const response: Response = await fetch(
       "https://jsonplaceholder.typicode.com/users"
     );
     if (!response.ok) {
@@ -41,7 +42,7 @@ export const fetchUsers = createAsyncThunk<
     }
     return data as User[];
   } catch (error: unknown) {
-    const message =
+    const message: string =
       error instanceof Error ? error.message : "Unknown error occurred";
     return rejectWithValue({ status: 0, message });
   }
@@ -55,26 +56,28 @@ const userListSlice = createSlice({
       state.users.push(action.payload);
     },
     deleteUser: (state, action: PayloadAction<number>) => {
-      state.users = state.users.filter((user) => user.id !== action.payload);
+      state.users = state.users.filter((user: User) => user.id !== action.payload);
     },
   },
-  extraReducers: (builder) => {
-    builder.addCase(fetchUsers.pending, (state) => {
-      state.loading = true;
-      state.error = null;
-    });
-    builder.addCase(fetchUsers.fulfilled, (state, action) => {
-      state.loading = false;
-      state.users = action.payload;
-      state.error = null;
-    });
-    builder.addCase(fetchUsers.rejected, (state, action) => {
-      state.loading = false;
-      state.error = action.payload ?? {
-        status: 0,
-        message: "Failed to load users.",
-      };
-    });
+  extraReducers: (builder: ActionReducerMapBuilder<UserListState>) => {
+    builder
+      .addCase(fetchUsers.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUsers.fulfilled, (state, action: PayloadAction<User[]>) => {
+        state.loading = false;
+        state.users = action.payload;
+        state.error = null;
+      })
+      .addCase(fetchUsers.rejected, (state, action) => {
+        state.loading = false;
+        const fallback: FetchErrorPayload = {
+          status: 0,
+          message: "Failed to load users.",
+        };
+        state.error = action.payload ?? fallback;
+      });
   },
 });
 

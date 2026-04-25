@@ -1,21 +1,28 @@
-import type { ReactElement } from "react";
+import type { JSX } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import type { RootState } from "../../store";
+import type { User } from "../../types/user";
 import { clearSelectedUser } from "./userDetailsSlice";
 
-function SelectedUserDetails(): ReactElement {
+const SelectedUserDetails = (): JSX.Element => {
   const selectedUserId = useAppSelector(
-    (state) => state.selectedUser.selectedUserId
+    (state: RootState) => state.selectedUser.selectedUserId
   );
-  const users = useAppSelector((state) => state.userList.users);
-
+  const users = useAppSelector((state: RootState) => state.userList.users);
   const dispatch = useAppDispatch();
+
+  const handleClearSelection = (): void => {
+    dispatch(clearSelectedUser());
+  };
 
   if (selectedUserId === null) {
     return <p>No user selected</p>;
   }
 
-  const user = users.find((u) => u.id === selectedUserId);
-  if (!user) {
+  const user: User | undefined = users.find(
+    (u: User) => u.id === selectedUserId
+  );
+  if (user === undefined) {
     return <p>User not found</p>;
   }
 
@@ -34,12 +41,12 @@ function SelectedUserDetails(): ReactElement {
       <button
         type="button"
         className="clear-btn"
-        onClick={() => dispatch(clearSelectedUser())}
+        onClick={handleClearSelection}
       >
         Clear Selection
       </button>
     </div>
   );
-}
+};
 
 export default SelectedUserDetails;

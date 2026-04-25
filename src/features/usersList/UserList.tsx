@@ -1,14 +1,27 @@
-import type { ReactElement } from "react";
+import type { JSX } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
+import type { RootState } from "../../store";
+import type { User } from "../../types/user";
 import { deleteUser, fetchUsers } from "./userListSlice";
 import { selectedUser } from "../userDetails/userDetailsSlice";
 
-function UserList(): ReactElement {
-  const users = useAppSelector((state) => state.userList.users);
-  const error = useAppSelector((state) => state.userList.error);
-  const loading = useAppSelector((state) => state.userList.loading);
-
+const UserList = (): JSX.Element => {
+  const users = useAppSelector((state: RootState) => state.userList.users);
+  const error = useAppSelector((state: RootState) => state.userList.error);
+  const loading = useAppSelector((state: RootState) => state.userList.loading);
   const dispatch = useAppDispatch();
+
+  const handleLoadUsers = (): void => {
+    void dispatch(fetchUsers());
+  };
+
+  const handleSelectUser = (id: number): void => {
+    dispatch(selectedUser(id));
+  };
+
+  const handleDeleteUser = (id: number): void => {
+    dispatch(deleteUser(id));
+  };
 
   return (
     <div className="user-list">
@@ -17,9 +30,7 @@ function UserList(): ReactElement {
       <button
         type="button"
         className="load-btn"
-        onClick={() => {
-          void dispatch(fetchUsers());
-        }}
+        onClick={handleLoadUsers}
       >
         Load Users
       </button>
@@ -27,7 +38,7 @@ function UserList(): ReactElement {
       {error && <p>{error.message}</p>}
       {!error && (
         <ul>
-          {users.map((user) => (
+          {users.map((user: User) => (
             <li key={user.id}>
               <span>
                 {user.name} - {user.email}
@@ -36,7 +47,7 @@ function UserList(): ReactElement {
                 <button
                   type="button"
                   className="select-btn"
-                  onClick={() => dispatch(selectedUser(user.id))}
+                  onClick={() => handleSelectUser(user.id)}
                 >
                   Select
                 </button>
@@ -44,7 +55,7 @@ function UserList(): ReactElement {
                 <button
                   type="button"
                   className="delete-btn"
-                  onClick={() => dispatch(deleteUser(user.id))}
+                  onClick={() => handleDeleteUser(user.id)}
                 >
                   Delete
                 </button>
@@ -55,6 +66,6 @@ function UserList(): ReactElement {
       )}
     </div>
   );
-}
+};
 
 export default UserList;
