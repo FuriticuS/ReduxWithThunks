@@ -1,8 +1,9 @@
+import type { ReactElement } from "react";
 import AddUserForm from "./features/usersList/AddUserForm";
 import UserList from "./features/usersList/UserList";
 import SelectedUserDetails from "./features/userDetails/SelectedUserDetails";
 
-export default function App() {
+export default function App(): ReactElement {
   return (
     <div className="app-container">
       <h1>User Management App</h1>
