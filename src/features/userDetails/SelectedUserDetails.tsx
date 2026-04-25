@@ -1,30 +1,25 @@
 import type { JSX } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import type { RootState } from "../../store";
-import type { User } from "../../types/user";
 import { clearSelectedUser } from "./userDetailsSlice";
+import { selectSelectedUserView } from "./selectedUserSelectors";
 
 const SelectedUserDetails = (): JSX.Element => {
-  const selectedUserId = useAppSelector(
-    (state: RootState) => state.selectedUser.selectedUserId
-  );
-  const users = useAppSelector((state: RootState) => state.userList.users);
+  const selection = useAppSelector(selectSelectedUserView);
   const dispatch = useAppDispatch();
 
   const handleClearSelection = (): void => {
     dispatch(clearSelectedUser());
   };
 
-  if (selectedUserId === null) {
+  if (selection.kind === "none") {
     return <p>No user selected</p>;
   }
 
-  const user: User | undefined = users.find(
-    (u: User) => u.id === selectedUserId
-  );
-  if (user === undefined) {
+  if (selection.kind === "notFound") {
     return <p>User not found</p>;
   }
+
+  const { user } = selection;
 
   return (
     <div className="selected-user-details">
