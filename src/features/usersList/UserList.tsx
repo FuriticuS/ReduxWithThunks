@@ -2,10 +2,10 @@ import type { JSX } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
 import type { RootState } from "../../store";
 import type { User } from "../../types/user";
-import { deleteUser, fetchUsers } from "./userListSlice";
 import { selectedUser } from "../userDetails/userDetailsSlice";
+import { deleteUser, fetchUsers } from "./userListSlice";
 
-const UserList = (): JSX.Element => {
+export const UserList = (): JSX.Element => {
   const users = useAppSelector((state: RootState) => state.userList.users);
   const error = useAppSelector((state: RootState) => state.userList.error);
   const loading = useAppSelector((state: RootState) => state.userList.loading);
@@ -67,5 +67,3 @@ const UserList = (): JSX.Element => {
     </div>
   );
 };
-
-export default UserList;

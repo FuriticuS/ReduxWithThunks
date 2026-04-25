@@ -21,6 +21,6 @@ const userDetailsSlice = createSlice({
   },
 });
 
-export default userDetailsSlice.reducer;
+export const userDetailsReducer = userDetailsSlice.reducer;
 
 export const { selectedUser, clearSelectedUser } = userDetailsSlice.actions;

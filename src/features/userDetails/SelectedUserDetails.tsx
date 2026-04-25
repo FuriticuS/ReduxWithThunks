@@ -1,9 +1,9 @@
 import type { JSX } from "react";
 import { useAppDispatch, useAppSelector } from "../../hooks";
-import { clearSelectedUser } from "./userDetailsSlice";
 import { selectSelectedUserView } from "./selectedUserSelectors";
+import { clearSelectedUser } from "./userDetailsSlice";
 
-const SelectedUserDetails = (): JSX.Element => {
+export const SelectedUserDetails = (): JSX.Element => {
   const selection = useAppSelector(selectSelectedUserView);
   const dispatch = useAppDispatch();
 
@@ -43,5 +43,3 @@ const SelectedUserDetails = (): JSX.Element => {
     </div>
   );
 };
-
-export default SelectedUserDetails;

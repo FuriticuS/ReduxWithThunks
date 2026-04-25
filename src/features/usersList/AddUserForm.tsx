@@ -4,7 +4,7 @@ import { useAppDispatch } from "../../hooks";
 import type { User } from "../../types/user";
 import { addUser } from "./userListSlice";
 
-const AddUserForm = (): JSX.Element => {
+export const AddUserForm = (): JSX.Element => {
   const [name, setName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const dispatch = useAppDispatch();
@@ -47,5 +47,3 @@ const AddUserForm = (): JSX.Element => {
     </form>
   );
 };
-
-export default AddUserForm;
